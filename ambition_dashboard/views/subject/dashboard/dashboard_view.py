@@ -23,35 +23,11 @@ class ActionItemModelWrapper(ModelWrapper):
     def subject_identifier(self):
         return self.object.subject_identifier
 
-    @property
-    def ae_initial(self):
-        if self.object.parent_reference_model == 'ambition_ae.aeinitial':
-            mdl_cls = django_apps.get_model('ambition_ae', 'aeinitial')
-            try:
-                ae_initial = mdl_cls.objects.get(
-                    subject_identifier=self.subject_identifier,
-                    tracking_identifier=self.object.parent_reference_identifier)
-                return ae_initial.pk
-            except mdl_cls.DoesNotExist:
-                pass
-        elif self.object.parent_reference_model == 'ambition_ae.aefollowup':
-            mdl_cls = django_apps.get_model('ambition_ae', 'aefollowup')
-            try:
-                ae_followup = mdl_cls.objects.get(
-                        subject_identifier=self.subject_identifier,
-                        tracking_identifier=self.object.parent_reference_identifier)
-                return ae_followup.ae_initial.pk
-            except mdl_cls.DoesNotExist:
-                pass
-        else:
-            return None
-
 class DashboardView(
         EdcBaseViewMixin, SubjectDashboardViewMixin,
         RandomizationListViewMixin,
         NavbarViewMixin, BaseDashboardView):
 
-    action_item_model_wrapper_cls = ActionItemModelWrapper
     dashboard_url = 'subject_dashboard_url'
     dashboard_template = 'subject_dashboard_template'
     appointment_model = 'edc_appointment.appointment'

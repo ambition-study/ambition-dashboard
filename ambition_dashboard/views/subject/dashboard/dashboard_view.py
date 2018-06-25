@@ -1,7 +1,10 @@
+from django.apps import apps as django_apps
+from django.conf import settings
 from ambition_dashboard.model_wrappers import AppointmentModelWrapper
 from ambition_rando.view_mixins import RandomizationListViewMixin
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
+from edc_model_wrapper import ModelWrapper
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
@@ -9,6 +12,16 @@ from ....model_wrappers import SubjectVisitModelWrapper
 from ....model_wrappers import SubjectConsentModelWrapper
 from ....model_wrappers import SubjectLocatorModelWrapper
 
+
+class ActionItemModelWrapper(ModelWrapper):
+
+    model = 'edc_action_item.actionitem'
+    next_url_attrs = ['subject_identifier', 'ae_initial']
+    next_url_name = settings.DASHBOARD_URL_NAMES.get('subject_dashboard_url')
+
+    @property
+    def subject_identifier(self):
+        return self.object.subject_identifier
 
 class DashboardView(
         EdcBaseViewMixin, SubjectDashboardViewMixin,
